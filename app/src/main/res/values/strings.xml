@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">TightPenny</string>
+    <string name="action_settings">Settings</string>
+    <string name="testing">Testing fonts</string>
+    <string name="foodLabel">Food</string>
+    <string name="eatingOutLabel">Eating Out</string>
+    <string name="leisureLabel">Leisure</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="dialog_fire_missiles">Fire missiles?</string>
+    <string name="fire">Fire</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
+    <string name="dialog_message">Sample message</string>
+    <string name="dialog_title">Sample title</string>
+    <string name="signin">Sign-in</string>
+</resources>
