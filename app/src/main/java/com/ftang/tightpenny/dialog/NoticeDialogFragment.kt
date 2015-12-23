@@ -10,7 +10,9 @@ import android.support.v4.app.DialogFragment
 import android.text.SpannableStringBuilder
 import android.widget.EditText
 import android.widget.Spinner
+import com.ftang.tightpenny.CategoryAdapter
 import com.ftang.tightpenny.R
+import com.ftang.tightpenny.model.Category
 import java.math.BigDecimal
 
 class NoticeDialogFragment : DialogFragment() {
@@ -19,7 +21,7 @@ class NoticeDialogFragment : DialogFragment() {
      * implement this interface in order to receive event callbacks.
      * Each method passes the DialogFragment in case the host needs to query it. */
     interface NoticeDialogListener {
-        fun onDialogPositiveClick(dialog: DialogFragment, category: String, amount: BigDecimal)
+        fun onDialogPositiveClick(dialog: DialogFragment, category: Category, amount: BigDecimal)
         fun onDialogNegativeClick(dialog: DialogFragment)
     }
 
@@ -33,14 +35,15 @@ class NoticeDialogFragment : DialogFragment() {
         val that = this
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        builder.setView(activity.layoutInflater.inflate(R.layout.new_spending_dialog, null))
+        val inflatedView = activity.layoutInflater.inflate(R.layout.new_spending_dialog, null)
+        builder.setView(inflatedView)
                 // Add action buttons
-                .setPositiveButton(R.string.signin, { dialog, id ->
+                .setPositiveButton(R.string.add_spending, { dialog, id ->
                     val dialogView = that.dialog
                     val categorySpinner = dialogView.findViewById(R.id.category) as Spinner
                     val amountET = dialogView.findViewById(R.id.amount) as EditText
 
-                    val category = categorySpinner.getSelectedItem().toString()
+                    val category = categorySpinner.selectedItem as Category
                     val amount = BigDecimal((amountET.text as SpannableStringBuilder).toString())
                     mListener?.onDialogPositiveClick(that, category, amount)
                 })
@@ -48,7 +51,13 @@ class NoticeDialogFragment : DialogFragment() {
                     dialog.cancel()
                     mListener?.onDialogNegativeClick(that)
                 })
-        return builder.create()
+
+        val dialog = builder.create()
+
+        val categorySpinner = inflatedView.findViewById(R.id.category) as Spinner
+        categorySpinner.adapter = CategoryAdapter(activity, Category.values.toList())
+
+        return dialog
     }
 
     // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener

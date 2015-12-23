@@ -14,7 +14,7 @@ import com.ftang.tightpenny.model.AggregateSpendingEntry;
 
 import java.util.List;
 
-public class MySimpleArrayAdapter extends ArrayAdapter<AggregateSpendingEntry> {
+public class AggregateSpendingEntryAdapter extends ArrayAdapter<AggregateSpendingEntry> {
     private final Activity context;
     private final List<AggregateSpendingEntry> values;
 
@@ -23,30 +23,11 @@ public class MySimpleArrayAdapter extends ArrayAdapter<AggregateSpendingEntry> {
         public TextView amount;
     }
 
-    public MySimpleArrayAdapter(Activity context, List<AggregateSpendingEntry> values) {
+    public AggregateSpendingEntryAdapter(Activity context, List<AggregateSpendingEntry> values) {
         super(context, -1, values);
         this.context = context;
         this.values = values;
     }
-
-   /* @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.rowlayout, parent, false);
-        TextView textView = (TextView) rowView.findViewById(R.id.label);
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
-        textView.setText(values[position]);
-        // change the icon for Windows and iPhone
-        String s = values[position];
-        if (s.startsWith("iPhone")) {
-            imageView.setImageResource(R.drawable.not_ok);
-        } else {
-            imageView.setImageResource(R.drawable.ok);
-        }
-
-        return rowView;
-    }*/
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -59,7 +40,7 @@ public class MySimpleArrayAdapter extends ArrayAdapter<AggregateSpendingEntry> {
         // fill data
         ViewHolder holder = (ViewHolder) rowView.getTag();
         AggregateSpendingEntry entry = values.get(position);
-        holder.text.setText(entry.getCategory());
+        holder.text.setText(entry.getCategory().getTitle());
         holder.amount.setText(entry.amount().toString()); // TODO better formatting
 
         return rowView;

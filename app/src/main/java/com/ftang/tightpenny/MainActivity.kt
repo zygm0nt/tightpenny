@@ -1,29 +1,27 @@
 package com.ftang.tightpenny
 
-import android.app.AlertDialog
-import android.app.Dialog
-import android.app.FragmentManager
-import android.content.Context
-import android.content.DialogInterface
-import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
-import android.view.View
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.*
-import com.ftang.tightpenny.dialog.FireMissilesDialogFragment
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ListView
 import com.ftang.tightpenny.dialog.NoticeDialogFragment
+import com.ftang.tightpenny.model.AggregateSpendingEntry
+import com.ftang.tightpenny.model.Category
 import com.ftang.tightpenny.model.SpendingEntryRepository
 import net.danlew.android.joda.JodaTimeAndroid
+import org.joda.time.DateTime
 import java.math.BigDecimal
-import java.util.*
 
+/**
+ * A lot about ListView is from here: http://www.vogella.com/tutorials/AndroidListView/article.html
+ */
 class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListener {
 
     val entryRepository = SpendingEntryRepository()
@@ -31,6 +29,9 @@ class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListe
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         JodaTimeAndroid.init(this)
+
+        //entryRepository.clearDb()
+
         setContentView(R.layout.activity_main)
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
@@ -41,14 +42,12 @@ class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListe
         }
 
         val listview = findViewById(R.id.summaryView) as ListView
+        listview.adapter = AggregateSpendingEntryAdapter(this, fetchSpendings())
 
-        val adapter = MySimpleArrayAdapter(this, entryRepository.getMonthSpendings(2015, 23));
-        listview.adapter = adapter
-
-        listview.onItemClickListener = AdapterView.OnItemClickListener() {
+        /*listview.onItemClickListener = AdapterView.OnItemClickListener() {
             parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
 
-                val item = parent!!.getItemAtPosition(position) as String
+                val item = parent!!.getItemAtPosition(position) as AggregateSpendingEntry
                 view!!.animate().setDuration(2000).alpha(0.0f)
                         .withEndAction({
                             fun run(): Unit {
@@ -57,8 +56,12 @@ class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListe
                                 view.setAlpha(1.0f);
                             }
                         })
-        }
+        }*/
+    }
 
+    private fun fetchSpendings(): List<AggregateSpendingEntry> {
+        val now = DateTime.now()
+        return entryRepository.getMonthSpendings(now.year, now.monthOfYear)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -68,17 +71,12 @@ class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListe
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
+        when (item.itemId) {
+            R.id.action_cleardb -> entryRepository.clearDb()
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true
+            else ->  return super.onOptionsItemSelected(item)
         }
-
-        return super.onOptionsItemSelected(item)
+        return true
     }
 
     fun  showNoticeDialog() {
@@ -89,32 +87,11 @@ class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListe
         }
     }
 
-    override fun onDialogPositiveClick(dialog: DialogFragment, category: String, amount: BigDecimal) {
+    override fun onDialogPositiveClick(dialog: DialogFragment, category: Category, amount: BigDecimal) {
         Log.i("TightPenny", "Got $amount in $category")
+        entryRepository.addNewSpending(category, amount)
     }
 
     override fun onDialogNegativeClick(dialog: DialogFragment) {
-    }
-
-    class StableArrayAdapter(context: Context, textViewResourceId: Int, objects: List<String>) :
-            ArrayAdapter<String>(context, textViewResourceId, objects) {
-
-        val mIdMap = HashMap<String, Int>()
-
-        init {
-            for (i in 0 .. objects.size - 1) {
-                mIdMap.put(objects.get(i), i)
-            }
-        }
-
-        override fun getItemId(position: Int): Long {
-            val item = getItem(position)
-            return mIdMap.get(item)!!.toLong()
-        }
-
-        override fun hasStableIds(): Boolean {
-            return true;
-        }
-
     }
 }

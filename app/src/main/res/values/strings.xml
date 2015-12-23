@@ -17,11 +17,7 @@
     <string name="category">Category</string>
     <string name="amount">Amount</string>
     <string name="catchyTitle">Another day, another spending</string>
+    <string name="add_spending">Add</string>
+    <string name="action_cleardb">ClearDB</string>
 
-    <string-array name="categories">
-        <item>Food and groceries</item>
-        <item>Eating out</item>
-        <item>Entertainment</item>
-        <item>Fuel</item>
-    </string-array>
 </resources>
