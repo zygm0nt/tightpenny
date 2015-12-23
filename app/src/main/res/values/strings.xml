@@ -14,4 +14,14 @@
     <string name="dialog_message">Sample message</string>
     <string name="dialog_title">Sample title</string>
     <string name="signin">Sign-in</string>
+    <string name="category">Category</string>
+    <string name="amount">Amount</string>
+    <string name="catchyTitle">Another day, another spending</string>
+
+    <string-array name="categories">
+        <item>Food and groceries</item>
+        <item>Eating out</item>
+        <item>Entertainment</item>
+        <item>Fuel</item>
+    </string-array>
 </resources>

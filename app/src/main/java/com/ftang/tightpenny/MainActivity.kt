@@ -3,20 +3,25 @@ package com.ftang.tightpenny
 import android.app.AlertDialog
 import android.app.Dialog
 import android.app.FragmentManager
+import android.content.Context
 import android.content.DialogInterface
+import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.View
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
+import android.widget.*
 import com.ftang.tightpenny.dialog.FireMissilesDialogFragment
 import com.ftang.tightpenny.dialog.NoticeDialogFragment
 import net.danlew.android.joda.JodaTimeAndroid
+import java.math.BigDecimal
+import java.util.*
 
 class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListener {
 
@@ -29,8 +34,31 @@ class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListe
 
         val fab = findViewById(R.id.fab) as FloatingActionButton
         fab.setOnClickListener { view ->
-            //onCreateDialog().show()
             showNoticeDialog()
+        }
+
+        val listview = findViewById(R.id.summaryView) as ListView
+        val values = arrayListOf("Android", "iPhone", "WindowsMobile",
+            "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
+            "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
+            "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
+            "Android", "iPhone", "WindowsMobile" )
+
+        val adapter = StableArrayAdapter(this, R.layout.simple_row_layout, values);
+        listview.adapter = adapter
+
+        listview.onItemClickListener = AdapterView.OnItemClickListener() {
+            parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
+
+                val item = parent!!.getItemAtPosition(position) as String
+                view!!.animate().setDuration(2000).alpha(0.0f)
+                        .withEndAction({
+                            fun run(): Unit {
+                                values.remove(item);
+                                adapter.notifyDataSetChanged();
+                                view.setAlpha(1.0f);
+                            }
+                        })
         }
 
     }
@@ -55,42 +83,6 @@ class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListe
         return super.onOptionsItemSelected(item)
     }
 
-    private fun createAlertDialog(): AlertDialog {
-        val builder = AlertDialog.Builder(this);
-
-        // 2. Chain together various setter methods to set the dialog characteristics
-        builder.setMessage(R.string.dialog_message)
-                .setTitle(R.string.dialog_title)
-
-        builder.setPositiveButton(R.string.ok, DialogInterface.OnClickListener() { dialog, id ->
-        })
-        builder.setNegativeButton(R.string.cancel, DialogInterface.OnClickListener() { dialog, id ->
-
-        })
-        // 3. Get the AlertDialog from create()
-        val dialog = builder.create();
-
-        return dialog
-    }
-
-    fun onCreateDialog(): Dialog {
-        val builder = AlertDialog.Builder(this)
-        // Get the layout inflater
-        val inflater = this.getLayoutInflater()
-
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
-        builder.setView(inflater.inflate(R.layout.new_spending_dialog, null))
-                // Add action buttons
-                .setPositiveButton(R.string.signin, DialogInterface.OnClickListener() { dialog, id ->
-
-                })
-                .setNegativeButton(R.string.cancel, DialogInterface.OnClickListener() { dialog, id ->
-                    dialog.cancel()
-                });
-        return builder.create()
-    }
-
     fun  showNoticeDialog() {
         val dialog = NoticeDialogFragment()
         val fragmentManager = supportFragmentManager
@@ -99,12 +91,32 @@ class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListe
         }
     }
 
-    override fun onDialogPositiveClick(dialog: DialogFragment?) {
-        throw UnsupportedOperationException()
+    override fun onDialogPositiveClick(dialog: DialogFragment, category: String, amount: BigDecimal) {
+        Log.i("TightPenny", "Got $amount in $category")
     }
 
-    override fun onDialogNegativeClick(dialog: DialogFragment?) {
-        throw UnsupportedOperationException()
+    override fun onDialogNegativeClick(dialog: DialogFragment) {
     }
 
+    class StableArrayAdapter(context: Context, textViewResourceId: Int, objects: List<String>) :
+            ArrayAdapter<String>(context, textViewResourceId, objects) {
+
+        val mIdMap = HashMap<String, Int>()
+
+        init {
+            for (i in 0 .. objects.size - 1) {
+                mIdMap.put(objects.get(i), i)
+            }
+        }
+
+        override fun getItemId(position: Int): Long {
+            val item = getItem(position)
+            return mIdMap.get(item)!!.toLong()
+        }
+
+        override fun hasStableIds(): Boolean {
+            return true;
+        }
+
+    }
 }

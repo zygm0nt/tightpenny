@@ -13,48 +13,10 @@
     tools:showIn="@layout/activity_main">
 
 
-    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="#CCC"
-        android:paddingTop="1dp"
-        android:stretchColumns="0"
-        android:id="@+id/tlTable01">
-
-        <TableRow
-            android:background="#CCC"
-            android:paddingBottom="1dp"
-            android:paddingRight="1dp">
-            <TextView
-                android:layout_marginLeft="1dp"
-                android:padding="5dp"
-                android:background="#FFF"
-                android:text="Item1"/>
-            <TextView
-                android:layout_marginLeft="1dp"
-                android:padding="5dp"
-                android:background="#FFF"
-                android:gravity="right"
-                android:text="123456"/>
-        </TableRow>
-        <TableRow
-            android:background="#CCC"
-            android:paddingBottom="1dp"
-            android:paddingRight="1dp">
-            <TextView
-                android:layout_marginLeft="1dp"
-                android:padding="5dp"
-                android:background="#FFF"
-                android:text="Item2"/>
-            <TextView
-                android:layout_marginLeft="1dp"
-                android:padding="5dp"
-                android:background="#FFF"
-                android:gravity="right"
-                android:text="456789"/>
-        </TableRow>
-    </TableLayout>
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/summaryView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <TextView fontPath="fonts/Wolf_in_the_City.ttf"
         android:text="@string/testing"
