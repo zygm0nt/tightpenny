@@ -19,11 +19,14 @@ import android.view.MenuItem
 import android.widget.*
 import com.ftang.tightpenny.dialog.FireMissilesDialogFragment
 import com.ftang.tightpenny.dialog.NoticeDialogFragment
+import com.ftang.tightpenny.model.SpendingEntryRepository
 import net.danlew.android.joda.JodaTimeAndroid
 import java.math.BigDecimal
 import java.util.*
 
 class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListener {
+
+    val entryRepository = SpendingEntryRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,13 +41,8 @@ class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListe
         }
 
         val listview = findViewById(R.id.summaryView) as ListView
-        val values = arrayListOf("Android", "iPhone", "WindowsMobile",
-            "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-            "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
-            "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
-            "Android", "iPhone", "WindowsMobile" )
 
-        val adapter = StableArrayAdapter(this, R.layout.simple_row_layout, values);
+        val adapter = MySimpleArrayAdapter(this, entryRepository.getMonthSpendings(2015, 23));
         listview.adapter = adapter
 
         listview.onItemClickListener = AdapterView.OnItemClickListener() {
@@ -54,7 +52,7 @@ class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListe
                 view!!.animate().setDuration(2000).alpha(0.0f)
                         .withEndAction({
                             fun run(): Unit {
-                                values.remove(item);
+                                //values.remove(item);
                                 adapter.notifyDataSetChanged();
                                 view.setAlpha(1.0f);
                             }
