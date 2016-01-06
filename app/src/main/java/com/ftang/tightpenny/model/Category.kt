@@ -7,8 +7,8 @@ enum class Category(val id: Int, val title: String) {
     Fuel(4, "Fuel");
 
     companion object {
-        fun valueOf(id: Int): Category {
-            return Category.values.filter { it.id == id }.first()
+        @JvmStatic fun valueOf(id: Int): Category {
+            return Category.values().filter { it.id == id }.first()
         }
     }
 }

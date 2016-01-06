@@ -16,13 +16,37 @@ public class SpendingEntry extends SugarRecord<SpendingEntry> {
 
     public SpendingEntry() {}
 
-    public SpendingEntry(String category, Integer amount, long timestamp, int year, int month, int day) {
-        this.category = category;
-        this.amount = amount;
+    public SpendingEntry(Category category, BigDecimal amount, long timestamp, int year, int month, int day) {
+        this.category = "" + category.getId();
+        this.amount = amount.multiply(BigDecimal.valueOf(100)).intValue();
         this.timestamp = timestamp;
         this.year = year;
         this.month = month;
         this.day = day;
+    }
+
+    public Category getCategory() {
+        return Category.valueOf(Integer.parseInt(category));
+    }
+
+    public BigDecimal getAmount() {
+        return BigDecimal.valueOf(amount).divide(BigDecimal.valueOf(100));
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public int getDay() {
+        return day;
     }
 
     @Override

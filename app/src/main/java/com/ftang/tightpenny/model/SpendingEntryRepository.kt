@@ -30,17 +30,18 @@ class SpendingEntryRepository {
 
         val results = monthsEntries.flatMap {it.toList() }.groupBy { it.first }.mapValues {
             it.component2().flatMap { it.second }
-        }.toList().map { AggregateSpendingEntry(it.first, it.second.map { it.amount })}
+        }.toList().map { AggregateSpendingEntry(it.first, it.second.map { it.getAmount() }.toArrayList())}
 
         return results
     }
 
-    fun addNewSpending(category: Category, amount: BigDecimal) {
+    fun addNewSpending(category: Category, amount: BigDecimal): SpendingEntry {
         val now = DateTime.now()
 
-        val entry = SpendingEntry("" + category.id, amount.toInt(), now.toDate().time,
+        val entry = SpendingEntry(category, amount, now.toDate().time,
                 now.year, now.monthOfYear, now.dayOfMonth)
         Log.i(TAG, "Persisting $entry")
         entry.save()
+        return entry
     }
 }

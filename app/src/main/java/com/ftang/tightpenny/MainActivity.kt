@@ -8,8 +8,6 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.AdapterView
 import android.widget.ListView
 import com.ftang.tightpenny.dialog.NoticeDialogFragment
 import com.ftang.tightpenny.model.AggregateSpendingEntry
@@ -18,6 +16,7 @@ import com.ftang.tightpenny.model.SpendingEntryRepository
 import net.danlew.android.joda.JodaTimeAndroid
 import org.joda.time.DateTime
 import java.math.BigDecimal
+import java.util.*
 
 /**
  * A lot about ListView is from here: http://www.vogella.com/tutorials/AndroidListView/article.html
@@ -25,12 +24,11 @@ import java.math.BigDecimal
 class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListener {
 
     val entryRepository = SpendingEntryRepository()
+    var listAdapter: AggregateSpendingEntryAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         JodaTimeAndroid.init(this)
-
-        //entryRepository.clearDb()
 
         setContentView(R.layout.activity_main)
         val toolbar = findViewById(R.id.toolbar) as Toolbar
@@ -41,8 +39,9 @@ class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListe
             showNoticeDialog()
         }
 
+        listAdapter = AggregateSpendingEntryAdapter(this, fetchSpendings().toArrayList())
         val listview = findViewById(R.id.summaryView) as ListView
-        listview.adapter = AggregateSpendingEntryAdapter(this, fetchSpendings())
+        listview.adapter = listAdapter
 
         /*listview.onItemClickListener = AdapterView.OnItemClickListener() {
             parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
@@ -89,7 +88,8 @@ class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListe
 
     override fun onDialogPositiveClick(dialog: DialogFragment, category: Category, amount: BigDecimal) {
         Log.i("TightPenny", "Got $amount in $category")
-        entryRepository.addNewSpending(category, amount)
+        val entry = entryRepository.addNewSpending(category, amount)
+        listAdapter!!.addSpending(entry)
     }
 
     override fun onDialogNegativeClick(dialog: DialogFragment) {

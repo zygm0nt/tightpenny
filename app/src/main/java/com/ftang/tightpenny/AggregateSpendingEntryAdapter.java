@@ -1,17 +1,20 @@
 package com.ftang.tightpenny;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ftang.tightpenny.model.AggregateSpendingEntry;
+import com.ftang.tightpenny.model.SpendingEntry;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AggregateSpendingEntryAdapter extends ArrayAdapter<AggregateSpendingEntry> {
@@ -23,7 +26,7 @@ public class AggregateSpendingEntryAdapter extends ArrayAdapter<AggregateSpendin
         public TextView amount;
     }
 
-    public AggregateSpendingEntryAdapter(Activity context, List<AggregateSpendingEntry> values) {
+    public AggregateSpendingEntryAdapter(Activity context, ArrayList<AggregateSpendingEntry> values) {
         super(context, -1, values);
         this.context = context;
         this.values = values;
@@ -44,6 +47,25 @@ public class AggregateSpendingEntryAdapter extends ArrayAdapter<AggregateSpendin
         holder.amount.setText(entry.amount().toString()); // TODO better formatting
 
         return rowView;
+    }
+
+    public void addSpending(SpendingEntry entry) {
+        AggregateSpendingEntry thatEntry = null;
+        for (AggregateSpendingEntry aggEntry : values) {
+            if (aggEntry.getCategory().equals(entry.getCategory())) {
+                thatEntry = aggEntry;
+                break;
+            }
+        }
+
+        if (thatEntry == null) {
+            thatEntry = new AggregateSpendingEntry(entry.getCategory(), new ArrayList<BigDecimal>());
+            values.add(thatEntry);
+        }
+        thatEntry.addEntry(entry);
+
+
+        notifyDataSetChanged();
     }
 
     @NonNull

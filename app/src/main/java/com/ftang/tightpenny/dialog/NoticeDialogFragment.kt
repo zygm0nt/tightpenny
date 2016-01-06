@@ -55,7 +55,7 @@ class NoticeDialogFragment : DialogFragment() {
         val dialog = builder.create()
 
         val categorySpinner = inflatedView.findViewById(R.id.category) as Spinner
-        categorySpinner.adapter = CategoryAdapter(activity, Category.values.toList())
+        categorySpinner.adapter = CategoryAdapter(activity, Category.values().toList())
 
         return dialog
     }
