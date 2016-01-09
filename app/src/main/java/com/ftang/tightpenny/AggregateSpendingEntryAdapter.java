@@ -11,8 +11,6 @@ import android.widget.TextView;
 import com.ftang.tightpenny.model.AggregateSpendingEntry;
 import com.ftang.tightpenny.model.SpendingEntry;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +22,7 @@ public class AggregateSpendingEntryAdapter extends ArrayAdapter<AggregateSpendin
     static class ViewHolder {
         public TextView text;
         public TextView amount;
+        public TextView limit;
     }
 
     public AggregateSpendingEntryAdapter(Activity context, ArrayList<AggregateSpendingEntry> values) {
@@ -44,8 +43,13 @@ public class AggregateSpendingEntryAdapter extends ArrayAdapter<AggregateSpendin
         ViewHolder holder = (ViewHolder) rowView.getTag();
         AggregateSpendingEntry entry = values.get(position);
         holder.text.setText(entry.getCategory().getTitle());
-        holder.amount.setText(entry.amount().toString()); // TODO better formatting
+        holder.amount.setText(String.format("%.2f", entry.amount()));
 
+        if (!entry.limit().equals(BigDecimal.ONE)) {
+            holder.limit.setText(String.format("limit: %.2f", entry.currentDailyLimit()));
+        } else {
+            holder.limit.setText("");
+        }
         return rowView;
     }
 
@@ -76,6 +80,7 @@ public class AggregateSpendingEntryAdapter extends ArrayAdapter<AggregateSpendin
         ViewHolder viewHolder = new ViewHolder();
         viewHolder.text = (TextView) rowView.findViewById(R.id.label);
         viewHolder.amount = (TextView) rowView.findViewById(R.id.amount);
+        viewHolder.limit = (TextView) rowView.findViewById(R.id.limit);
         rowView.setTag(viewHolder);
         return rowView;
     }
