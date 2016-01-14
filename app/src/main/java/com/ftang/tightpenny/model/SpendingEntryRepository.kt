@@ -30,7 +30,7 @@ class SpendingEntryRepository {
 
         val results = monthsEntries.flatMap {it.toList() }.groupBy { it.first }.mapValues {
             it.component2().flatMap { it.second }
-        }.toList().map { AggregateSpendingEntry(it.first, it.second.map { it.getAmount() }.toArrayList())}
+        }.toList().map { AggregateSpendingEntry(it.first, it.second.map { SimpleSpendingEntry.fromSpendingEntry(it) }.toArrayList())}
 
         return results
     }

@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ExpandableListView
 import android.widget.ListView
 import com.ftang.tightpenny.dialog.NoticeDialogFragment
 import com.ftang.tightpenny.model.AggregateSpendingEntry
@@ -24,7 +25,7 @@ import java.util.*
 class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListener {
 
     val entryRepository = SpendingEntryRepository()
-    var listAdapter: AggregateSpendingEntryAdapter? = null
+    var listAdapter: ExpandableAggregateSpendingEntryAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,9 +40,9 @@ class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListe
             showNoticeDialog()
         }
 
-        listAdapter = AggregateSpendingEntryAdapter(this, fetchSpendings().toArrayList())
-        val listview = findViewById(R.id.summaryView) as ListView
-        listview.adapter = listAdapter
+        listAdapter = ExpandableAggregateSpendingEntryAdapter(this, fetchSpendings().toArrayList())
+        val listview = findViewById(R.id.summaryView) as ExpandableListView
+        listview.setAdapter(listAdapter)
 
         /*listview.onItemClickListener = AdapterView.OnItemClickListener() {
             parent: AdapterView<*>?, view: View?, position: Int, id: Long ->

@@ -10,14 +10,22 @@ import java.util.*
 import kotlin.math.minus
 import kotlin.math.plus
 
-// entries with dates ?? TODO
-class AggregateSpendingEntry(val category: Category, val entries: ArrayList<BigDecimal>) {
+data class SimpleSpendingEntry(val amount: BigDecimal, val date: DateTime) {
+
+    companion object {
+        fun fromSpendingEntry(entry: SpendingEntry): SimpleSpendingEntry {
+            return SimpleSpendingEntry(entry.getAmount(), DateTime(entry.timestamp))
+        }
+    }
+}
+
+class AggregateSpendingEntry(val category: Category, val entries: ArrayList<SimpleSpendingEntry>) {
     fun amount(): BigDecimal {
         Log.i("Model", "Entries in $category: $entries")
         if (entries.size == 0) {
             return BigDecimal.ZERO
         } else {
-            return entries.reduce { acc, entry -> acc.plus(entry) }
+            return entries.fold(BigDecimal.ZERO, { acc, entry -> acc.plus(entry.amount)})
         }
     }
 
@@ -47,6 +55,6 @@ class AggregateSpendingEntry(val category: Category, val entries: ArrayList<BigD
     }
 
     fun addEntry(entry: SpendingEntry) {
-        entries.add(entry.getAmount())
+        entries.add(SimpleSpendingEntry.fromSpendingEntry(entry))
     }
 }
