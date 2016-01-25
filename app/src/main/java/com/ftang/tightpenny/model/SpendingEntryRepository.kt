@@ -19,7 +19,6 @@ class SpendingEntryRepository {
         val entries = SpendingEntry.find(SpendingEntry::class.java,
                 "year = ? and month = ? and day = ?", "" + year, "" + month, "" + day)
 
-        Log.i(TAG, "Fetch for ($year, $month, $day) got ${entries.size}")
         return entries.groupBy { it.category }.mapKeys { Category.valueOf(it.component1().toInt()) }
     }
 
@@ -40,7 +39,6 @@ class SpendingEntryRepository {
 
         val entry = SpendingEntry(category, amount, now.toDate().time,
                 now.year, now.monthOfYear, now.dayOfMonth)
-        Log.i(TAG, "Persisting $entry")
         entry.save()
         return entry
     }

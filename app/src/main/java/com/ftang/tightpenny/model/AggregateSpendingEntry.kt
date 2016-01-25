@@ -21,7 +21,6 @@ data class SimpleSpendingEntry(val amount: BigDecimal, val date: DateTime) {
 
 class AggregateSpendingEntry(val category: Category, val entries: ArrayList<SimpleSpendingEntry>) {
     fun amount(): BigDecimal {
-        Log.i("Model", "Entries in $category: $entries")
         if (entries.size == 0) {
             return BigDecimal.ZERO
         } else {
