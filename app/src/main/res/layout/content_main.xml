@@ -18,7 +18,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <TextView fontPath="fonts/Wolf_in_the_City.ttf"
+    <!-- fontPath="fonts/Wolf_in_the_City.ttf" -->
+    <TextView
         android:text="@string/testing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,6 +28,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="152dp"
-        android:textSize="50dp"/>
+        android:textSize="50dp"
+        android:textAppearance="@style/TextAppearance.FontPath"/>
 
 </RelativeLayout>

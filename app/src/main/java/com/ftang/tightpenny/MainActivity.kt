@@ -6,6 +6,8 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.text.Spannable
+import android.text.SpannableString
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -46,8 +48,10 @@ class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListe
         )
 
         setContentView(R.layout.activity_main)
+
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
+        stylingActionBar()
 
         val fab = findViewById(R.id.fab) as FloatingActionButton
         fab.setOnClickListener { view ->
@@ -172,5 +176,14 @@ class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListe
     }
 
     override fun onDialogNegativeClick(dialog: DialogFragment) {
+    }
+
+    private fun stylingActionBar() {
+        val s = SpannableString("TightPenny");
+        s.setSpan(TypefaceSpan(this, "Wolf_in_the_City.ttf"), 0, s.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        // Update the action bar title with the TypefaceSpan instance
+        val actionBar = getSupportActionBar()
+        actionBar.title = s
     }
 }
