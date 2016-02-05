@@ -2,6 +2,7 @@ package com.ftang.tightpenny;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,7 +67,7 @@ public class ExpandableAggregateSpendingEntryAdapter extends BaseExpandableListA
     }
 
     @Override
-    public View getChildView(int groupPosition, final int childPosition,
+    public View getChildView(final int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
         final SimpleSpendingEntry entry = (SimpleSpendingEntry) getChild(groupPosition, childPosition);
         View rowView = convertView;
@@ -76,13 +77,15 @@ public class ExpandableAggregateSpendingEntryAdapter extends BaseExpandableListA
         DetailsViewHolder holder = (DetailsViewHolder) rowView.getTag();
         holder.amount.setText(String.format("%.2f", entry.getAmount()));
         holder.date.setText(dateTimeFormatter.print(entry.getDate()));
-        /*convertView.setOnClickListener(new OnClickListener() {
+
+        rowView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View v) {
-                Toast.makeText(activity, txt,
-                        Toast.LENGTH_SHORT).show();
+            public boolean onLongClick(View v) {
+                values.get(groupPosition).getEntries().remove(childPosition);
+                notifyDataSetChanged();
+                return false;
             }
-        });*/
+        });
         return rowView;
     }
 
@@ -128,7 +131,6 @@ public class ExpandableAggregateSpendingEntryAdapter extends BaseExpandableListA
         ViewHolder holder = (ViewHolder) rowView.getTag();
         AggregateSpendingEntry entry = (AggregateSpendingEntry) getGroup(groupPosition);
         holder.text.setText(entry.getCategory().getTitle());
-        //holder.text.setChecked(isExpanded);
         holder.amount.setText(String.format("%.2f", entry.amount()));
 
         if (!entry.limit().equals(BigDecimal.ZERO)) {
@@ -141,18 +143,17 @@ public class ExpandableAggregateSpendingEntryAdapter extends BaseExpandableListA
 
     @Override
     public boolean hasStableIds() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
-        return false;
+        return true;
     }
 
     @NonNull
     private View createNewRowView() {
         View rowView = inflater.inflate(R.layout.rowlayout, null);
-        // configure view holder
         ViewHolder viewHolder = new ViewHolder();
         viewHolder.text = (TextView) rowView.findViewById(R.id.label);
         viewHolder.amount = (TextView) rowView.findViewById(R.id.amount);

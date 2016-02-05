@@ -8,7 +8,9 @@
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:scaleType="center"
-        android:background="#FFFFBB33"
+        android:background="@color/colorAccent"
+        android:textSize="55sp"
+        android:textAppearance="@style/TextAppearance.FontPath"
         android:contentDescription="@string/app_name" />
 
     <Spinner
