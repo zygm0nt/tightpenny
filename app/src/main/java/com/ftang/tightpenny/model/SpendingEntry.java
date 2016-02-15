@@ -3,9 +3,11 @@ package com.ftang.tightpenny.model;
 import com.orm.SugarRecord;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 public class SpendingEntry extends SugarRecord<SpendingEntry> {
 
+    String uuid;
     String category;
     Integer amount;
     long timestamp;
@@ -17,6 +19,7 @@ public class SpendingEntry extends SugarRecord<SpendingEntry> {
     public SpendingEntry() {}
 
     public SpendingEntry(Category category, BigDecimal amount, long timestamp, int year, int month, int day) {
+        this.uuid = UUID.randomUUID().toString();
         this.category = "" + category.getId();
         this.amount = amount.multiply(BigDecimal.valueOf(100)).intValue();
         this.timestamp = timestamp;
@@ -31,6 +34,10 @@ public class SpendingEntry extends SugarRecord<SpendingEntry> {
 
     public BigDecimal getAmount() {
         return BigDecimal.valueOf(amount).divide(BigDecimal.valueOf(100));
+    }
+
+    public String getUuid() {
+        return uuid;
     }
 
     public long getTimestamp() {
@@ -52,7 +59,8 @@ public class SpendingEntry extends SugarRecord<SpendingEntry> {
     @Override
     public String toString() {
         return "SpendingEntry{" +
-                "category='" + category + '\'' +
+                "uuid='" + uuid + '\'' +
+                ", category='" + category + '\'' +
                 ", amount=" + amount +
                 ", timestamp=" + timestamp +
                 ", year=" + year +

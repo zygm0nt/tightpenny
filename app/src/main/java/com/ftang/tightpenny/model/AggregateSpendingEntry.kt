@@ -1,6 +1,5 @@
 package com.ftang.tightpenny.model
 
-import android.util.Log
 import org.joda.time.DateTime
 import org.joda.time.DateTimeConstants
 import org.joda.time.LocalDate
@@ -10,11 +9,11 @@ import java.util.*
 import kotlin.math.minus
 import kotlin.math.plus
 
-data class SimpleSpendingEntry(val amount: BigDecimal, val date: DateTime) {
+data class SimpleSpendingEntry(val amount: BigDecimal, val date: DateTime, val uuid: String) {
 
     companion object {
         fun fromSpendingEntry(entry: SpendingEntry): SimpleSpendingEntry {
-            return SimpleSpendingEntry(entry.getAmount(), DateTime(entry.timestamp))
+            return SimpleSpendingEntry(entry.getAmount(), DateTime(entry.timestamp), entry.uuid)
         }
     }
 }

@@ -9,7 +9,7 @@
         android:layout_height="64dp"
         android:scaleType="center"
         android:background="@color/colorAccent"
-        android:textSize="55sp"
+        android:textSize="45sp"
         android:textAppearance="@style/TextAppearance.FontPath"
         android:contentDescription="@string/app_name" />
 

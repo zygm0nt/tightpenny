@@ -8,13 +8,9 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.Spannable
 import android.text.SpannableString
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.AdapterView
 import android.widget.ExpandableListView
-import android.widget.ListView
 import com.ftang.tightpenny.dialog.NoticeDialogFragment
 import com.ftang.tightpenny.model.AggregateSpendingEntry
 import com.ftang.tightpenny.model.Category
@@ -24,12 +20,11 @@ import org.joda.time.DateTime
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
 import java.math.BigDecimal
-import java.util.*
 
 /**
  * A lot about ListView is from here: http://www.vogella.com/tutorials/AndroidListView/article.html
  */
-class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListener {
+class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListener, RemoveSpending {
 
     val entryRepository = SpendingEntryRepository()
     var listAdapter: ExpandableAggregateSpendingEntryAdapter? = null
@@ -59,7 +54,7 @@ class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListe
             showNoticeDialog()
         }
 
-        listAdapter = ExpandableAggregateSpendingEntryAdapter(this, fetchSpendings().toArrayList())
+        listAdapter = ExpandableAggregateSpendingEntryAdapter(this, fetchSpendings().toArrayList(), this)
         val listview = findViewById(R.id.summaryView) as ExpandableListView
         listview.setAdapter(listAdapter)
     }
@@ -79,12 +74,12 @@ class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListe
         when (item.itemId) {
             R.id.action_cleardb -> entryRepository.clearDb()
 
-            else ->  return super.onOptionsItemSelected(item)
+            else -> return super.onOptionsItemSelected(item)
         }
         return true
     }
 
-    fun  showNoticeDialog() {
+    fun showNoticeDialog() {
         val dialog = NoticeDialogFragment()
         val fragmentManager = supportFragmentManager
         if (fragmentManager != null) {
@@ -108,4 +103,12 @@ class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListe
         val actionBar = getSupportActionBar()
         actionBar.title = s
     }
+
+    override fun removeSpending(uuid: String) {
+        entryRepository.removeSpending(uuid)
+    }
+}
+
+interface RemoveSpending {
+    fun removeSpending(uuid: String)
 }

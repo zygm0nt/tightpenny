@@ -42,4 +42,12 @@ class SpendingEntryRepository {
         entry.save()
         return entry
     }
+
+    fun removeSpending(uuid: String) {
+        SpendingEntry.find(SpendingEntry::class.java, "uuid = ?", uuid)
+                .forEach {
+                    Log.d(TAG, "Trying to delete " + it)
+                    it.delete()
+                }
+    }
 }

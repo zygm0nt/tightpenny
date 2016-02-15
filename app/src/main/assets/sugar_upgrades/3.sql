@@ -1,0 +1,1 @@
+alter table SPENDING_ENTRY add UUID TEXT;

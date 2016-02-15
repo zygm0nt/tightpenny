@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ftang.tightpenny.model.AggregateSpendingEntry;
+import com.ftang.tightpenny.model.Category;
 import com.ftang.tightpenny.model.SimpleSpendingEntry;
 import com.ftang.tightpenny.model.SpendingEntry;
 
@@ -23,9 +24,12 @@ import org.joda.time.format.DateTimeFormatter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+import kotlin.Unit;
+
 public class ExpandableAggregateSpendingEntryAdapter extends BaseExpandableListAdapter {
 
     private final SparseArray<AggregateSpendingEntry> values;
+    private final RemoveSpending removeSpending;
     public LayoutInflater inflater;
     public Activity activity;
 
@@ -42,10 +46,11 @@ public class ExpandableAggregateSpendingEntryAdapter extends BaseExpandableListA
         public TextView date;
     }
 
-    public ExpandableAggregateSpendingEntryAdapter(Activity act, ArrayList<AggregateSpendingEntry> values) {
+    public ExpandableAggregateSpendingEntryAdapter(Activity act, ArrayList<AggregateSpendingEntry> values, RemoveSpending removeSpending) {
         activity = act;
         this.values = toSparseArray(values);
         inflater = act.getLayoutInflater();
+        this.removeSpending = removeSpending;
     }
 
     private SparseArray<AggregateSpendingEntry> toSparseArray(ArrayList<AggregateSpendingEntry> values) {
@@ -81,8 +86,16 @@ public class ExpandableAggregateSpendingEntryAdapter extends BaseExpandableListA
         rowView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                values.get(groupPosition).getEntries().remove(childPosition);
-                notifyDataSetChanged();
+                v.animate().setDuration(2000).alpha(0.0f)
+                        .withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                SimpleSpendingEntry entry = values.get(groupPosition).getEntries().get(childPosition);
+                                values.get(groupPosition).getEntries().remove(childPosition);
+                                removeSpending.removeSpending(entry.getUuid());
+                                notifyDataSetChanged();
+                            }
+                        });
                 return false;
             }
         });
@@ -184,7 +197,7 @@ public class ExpandableAggregateSpendingEntryAdapter extends BaseExpandableListA
 
         if (thatEntry == null) {
             thatEntry = new AggregateSpendingEntry(entry.getCategory(), new ArrayList<SimpleSpendingEntry>());
-            values.append(values.size() + 1, thatEntry);
+            values.append(values.size(), thatEntry);
         }
         thatEntry.addEntry(entry);
 
